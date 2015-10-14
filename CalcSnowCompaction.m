@@ -1,9 +1,11 @@
-function [mLayerDepth mLayerVolFracIceNew  mLayerVolFracLiqNew CR_grainGrowth_all CR_ovrvdnPress_all] = CalcSnowCompaction_TEST(mLayerDepth,mLayerTemp,mLayerVolFracIceNew,mLayerVolFracLiqNew,...
+function [mLayerDepth, mLayerVolFracIceNew,  mLayerVolFracLiqNew, CR_grainGrowth_all, CR_ovrvdnPress_all] = CalcSnowCompaction(mLayerDepth,mLayerTemp,mLayerVolFracIceNew,mLayerVolFracLiqNew,...
     densScalGrowth,tempScalGrowth,grainGrowthRate,densScalOvrbdn,tempScalOvrbdn,base_visc,dt,nSnow,mLayerMeltFreeze,...
     scalarSnowSublimation)
 
-% Coded from SUMMA fortran into Matlab for testing reasonable ranges of
+% Coded from SUMMA  into Matlab for testing reasonable ranges of
 % parameter values for experiment
+
+% Nic Wayand Oct 2015
 
  % Constants
 iden_ice = 917;
@@ -99,9 +101,7 @@ wetSnowThresh=0.01;
 
  % check depth
  if(any(mLayerDepth(1:nSnow) < 0))
-  for iSnow=1:nSnow
-   sprintf('(a,1x,i4,1x,4(f12.5,1x))) iSnow, mLayerDepth(iSnow)', iSnow, mLayerDepth(iSnow));
-  end
+  error('Snow depth less than 0')
  end
 
  % check for low/high snow density
@@ -109,9 +109,5 @@ wetSnowThresh=0.01;
     any(mLayerVolFracIceNew(1:nSnow)*iden_ice > 900))
         disp('Density out of bounds')
         mLayerVolFracIceNew(1:nSnow)*iden_ice
-%   for iSnow=1,nSnow
-%    write(*,'(a,1x,i4,1x,f9.3)') 'iSnow, density = ', iSnow, mLayerVolFracIceNew(iSnow)*iden_ice
-%   end do
-
  end
 

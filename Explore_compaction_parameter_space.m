@@ -2,9 +2,12 @@ clear all; close all; clc;
 
 % Calculate compaction of snow layers
 
+% Nic Wayand Oct 2015
+
+
 %% Define parameters
 %! ********************************************************************
-%! snow compaction Default values
+%! snow compaction Default values as in SUMMA
 %! ********************************************************************
 % densScalGrowth            |       0.0460 |       0.0230 |       0.0920
 % tempScalGrowth            |       0.0400 |       0.0200 |       0.0600
@@ -13,14 +16,15 @@ clear all; close all; clc;
 % tempScalOvrbdn            |       0.0800 |       0.0600 |       0.10000 
 % base_visc                 |       9.0d+5 |       5.0d+5 |       1.5d+6
 
+% Notes on parameter importance
 % densScalGrowth  (BIG impact)  Lower values higher compaction rates
 % tempScalGrowth  (small impact) Lower values higher compaction rates 
-% grainGrowthRate  (med impact)  Higher values higher compaction rates 
-% densScalOvrbdn  (BIGimpact) Lower values equal higher compaction rates 
+% grainGrowthRate (med impact)  Higher values higher compaction rates 
+% densScalOvrbdn  (BIG impact) Lower values equal higher compaction rates 
 % tempScalOvrbdn- (Little impact)        
 % base_visc       (med impact) lower values equal higher compaction rates
 
-
+% Define Parameter Values
 densScalGrowth            =       0.0460; %|       0.0330 |       0.0920
 tempScalGrowth            =       0.0400; %|       0.0200 |       0.0600
 grainGrowthRate           =       2.7d-6; %|       1.0d-6 |       5.0d-6
@@ -28,6 +32,7 @@ densScalOvrbdn            =       0.0230; %|       0.0200 |       0.0460
 tempScalOvrbdn            =       0.0800; %|       0.06000 |      0.1000
 base_visc                 =       9.0d+5; %|       5.0d+5 |       1.5d+6
 
+% Define Option range of parameters
 densScalGrowth_all = [0.0330 0.0460 0.0920];
 tempScalGrowth_all = [0.0200 0.0400 0.0600];
 grainGrowthRate_all = [1.0d-6 2.7d-6 5.0d-6];
@@ -35,8 +40,9 @@ densScalOvrbdn_all = [0.0200   0.0230     0.0460];
 tempScalOvrbdn_all = [0.06000 0.0800    0.1000];
 base_visc_all = [5.0d+5 9.0d+5 1.5d+6];
 
-for cParam = 1:3
+for cParam = 1:3 % 
     
+    % Uncomment one variable below to explore sensitivity
 %     densScalOvrbdn = densScalOvrbdn_all(cParam);
 %     tempScalOvrbdn = tempScalOvrbdn_all(cParam);
 %     densScalGrowth = densScalGrowth_all(cParam);
@@ -71,8 +77,8 @@ for cParam = 1:3
     nSnow = sum(layerType==1002);
 
     %% Calculate Compaction
-    nDt = 10000; %number of time steps
-    dt = 3600*10; % s
+    nDt = 1000; %number of time steps
+    dt = 3600; % s
 
     outofbounds = false;
     
@@ -82,8 +88,7 @@ for cParam = 1:3
             [mLayerDepth(cts,:) mLayerVolFracIce(cts,:)  mLayerVolFracLiq(cts,:)...
                 CR_grainGrowth_all(cts,:) CR_ovrvdnPress_all(cts,:)]  = ...
                 ...
-                CalcSnowCompaction_TEST(mLayerDepth(cts-1,:),...
-                mLayerTemp,...
+                CalcSnowCompaction(mLayerDepth(cts-1,:),mLayerTemp,...
                 mLayerVolFracIce(cts-1,:),mLayerVolFracLiq(cts-1,:),...
                 densScalGrowth,tempScalGrowth,grainGrowthRate,densScalOvrbdn,tempScalOvrbdn,base_visc,dt,nSnow,...
                 mLayerMeltFreeze,scalarSnowSublimation);
